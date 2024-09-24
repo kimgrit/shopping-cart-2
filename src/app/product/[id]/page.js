@@ -1,22 +1,26 @@
-// src/app/product/[id]/page.js
-'use client'; // 클라이언트 컴포넌트로 지정
+'use client'; // 클라이언트 전용 컴포넌트
 
 import { useRouter } from 'next/navigation';
 import { Button } from '../../../components/Button';
 import { GNB } from '../../../components/GNB';
 import { GNB_TYPE, PRODUCTS } from '../../../constants/common';
 import styled from '@emotion/styled';
-import React, { useContext } from 'react';
-import { useCartStore } from '../../../store/cartStore'; // Zustand store import
+import React from 'react';
+import { useCartStore } from '../../../store/cartStore';
 
-function ProductPage() {
-    const router = useRouter();
-    const { id } = router.query;
-    const product = PRODUCTS[parseInt(id)];
-    const addToCart = useCartStore((state) => state.addToCart);
+function ProductPage({ params }) {
+    const { id } = params; // URL 파라미터에서 id를 가져옵니다
+    const product = PRODUCTS[parseInt(id)]; // 문자열 id를 정수로 변환
+    const { cart, addToCart } = useCartStore();
 
     const handleCart = (product) => {
+        if (cart.find((item) => item.id === product.id)) {
+            alert('이미 장바구니에 추가된 상품입니다.');
+            return;
+        }
         addToCart(product);
+
+        alert('장바구니에 추가되었습니다.');
     };
 
     return (
@@ -77,5 +81,5 @@ const Highlight = styled.span`
     background: linear-gradient(to bottom, pink 70%, transparent 60%);
     background-size: 100% 40%;
     background-repeat: no-repeat;
-    background-position: 0 100%;
+    background-position: 0 100%; /* Bottom alignment */
 `;

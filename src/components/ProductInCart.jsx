@@ -5,18 +5,20 @@ import { Button } from './Button';
 import { useRouter } from 'next/navigation';
 import { PAGE } from '../constants/common';
 import { Box } from '../styles/StyleComponent';
+import { useCartStore } from '../store/cartStore'; // Zustand store import
 
-export const ProductInCart = ({ product, cart, setCart, ...rest }) => {
+export const ProductInCart = ({ product, ...rest }) => {
     const router = useRouter();
+    const { removeFromCart } = useCartStore(); // Zustand의 removeFromCart 함수 사용
 
-    const handleRemove = (product) => {
-        const newCart = cart.filter((item) => item !== product);
-        setCart(newCart);
+    const handleRemove = () => {
+        removeFromCart(product.id);
+        alert('상품이 장바구니에서 제거되었습니다.');
     };
 
     return (
         <Item {...rest}>
-            <Box gap={6}>
+            <Box gap={4}>
                 <Name
                     dangerouslySetInnerHTML={{
                         __html: product.name.replace(/\\n/g, '<br/>'),
@@ -24,14 +26,19 @@ export const ProductInCart = ({ product, cart, setCart, ...rest }) => {
                 />
                 <Description>{product.description}</Description>
             </Box>
+            <Box>
+                <Name>{product.price}원</Name>
+            </Box>
+
             <Box gap={4} style={{ width: 'fit-content' }}>
                 <Button onClick={() => router.push(`${PAGE.PRODUCT}/${product.id}`)}>제품 설명 보기</Button>
-                <Button onClick={() => handleRemove(product)}>제거하기</Button>
+                <Button onClick={handleRemove}>제거하기</Button>
             </Box>
         </Item>
     );
 };
 
+// ... (스타일 컴포넌트 코드는 그대로 유지)
 const Item = styled.div`
     width: 100%;
     display: flex;

@@ -11,7 +11,19 @@ import { useCartStore } from '../store/cartStore'; // Zustand store import
 
 export const Product = ({ product, ...rest }) => {
     const router = useRouter();
-    const addToCart = useCartStore((state) => state.addToCart); // Zustand의 addToCart 함수 사용
+    const { cart, addToCart } = useCartStore(); // cart 상태도 가져옵니다
+
+    const handleAddToCart = () => {
+        // 장바구니에 이미 있는지 확인
+        if (cart.some((item) => item.id === product.id)) {
+            alert('이미 장바구니에 추가된 상품입니다.');
+            return;
+        }
+
+        // 장바구니에 추가
+        addToCart(product);
+        alert('장바구니에 추가되었습니다.');
+    };
 
     return (
         <Item {...rest}>
