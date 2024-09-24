@@ -1,16 +1,17 @@
 // src/app/cart/page.js
-'use client'; // 클라이언트 컴포넌트로 지정
+'use client';
 
-import React, { useContext } from 'react';
+import React from 'react';
 import styled from '@emotion/styled';
 import { GNB } from '../../components/GNB';
 import { GNB_TYPE } from '../../constants/common';
 import { ProductInCart } from '../../components/ProductInCart';
 import { Box } from '../../styles/StyleComponent';
-import { CartContext } from '../../context/CartContext';
+import { useCartStore } from '../../store/cartStore'; // Zustand store import
 
 function CartPage() {
-    const { cart, setCart } = useContext(CartContext);
+    const cart = useCartStore((state) => state.cart); // Zustand의 cart 상태 사용
+    const removeFromCart = useCartStore((state) => state.removeFromCart); // Zustand의 removeFromCart 함수 사용
 
     return (
         <Base>
@@ -21,7 +22,7 @@ function CartPage() {
                         <Text>등록된 상품이 없습니다.</Text>
                     ) : (
                         cart.map((product, id) => (
-                            <ProductInCart key={id} product={product} cart={cart} setCart={setCart} />
+                            <ProductInCart key={id} product={product} removeFromCart={removeFromCart} />
                         ))
                     )}
                 </Box>

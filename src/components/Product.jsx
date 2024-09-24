@@ -1,25 +1,17 @@
 // src/components/Product.jsx
 'use client';
-import React, { useContext } from 'react';
+
+import React from 'react';
 import styled from '@emotion/styled';
 import { Button } from './Button';
 import { useRouter } from 'next/navigation';
 import { PAGE } from '../constants/common';
 import { Box } from '../styles/StyleComponent';
-import { CartContext } from '../context/CartContext';
+import { useCartStore } from '../store/cartStore'; // Zustand store import
 
 export const Product = ({ product, ...rest }) => {
     const router = useRouter();
-    const { cart, setCart } = useContext(CartContext);
-
-    const handleCart = (product) => {
-        if (cart.find((item) => item.id === product.id)) {
-            alert('이미 장바구니에 추가된 상품입니다.');
-            return;
-        }
-        setCart((prev) => [...prev, product]);
-        alert('장바구니에 추가되었습니다.');
-    };
+    const addToCart = useCartStore((state) => state.addToCart); // Zustand의 addToCart 함수 사용
 
     return (
         <Item {...rest}>
@@ -33,7 +25,7 @@ export const Product = ({ product, ...rest }) => {
             </Box>
             <Box gap={4} style={{ width: 'fit-content' }}>
                 <Button onClick={() => router.push(`${PAGE.PRODUCT}/${product.id}`)}>제품 설명 보기</Button>
-                <Button onClick={() => handleCart(product)}>장바구니 담기</Button>
+                <Button onClick={() => addToCart(product)}>장바구니 담기</Button>
             </Box>
         </Item>
     );

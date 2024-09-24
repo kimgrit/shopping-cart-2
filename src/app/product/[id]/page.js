@@ -1,25 +1,22 @@
 // src/app/product/[id]/page.js
+'use client'; // 클라이언트 컴포넌트로 지정
+
 import { useRouter } from 'next/navigation';
 import { Button } from '../../../components/Button';
 import { GNB } from '../../../components/GNB';
 import { GNB_TYPE, PRODUCTS } from '../../../constants/common';
 import styled from '@emotion/styled';
 import React, { useContext } from 'react';
-import { CartContext } from '../../../context/CartContext';
+import { useCartStore } from '../../../store/cartStore'; // Zustand store import
 
 function ProductPage() {
     const router = useRouter();
     const { id } = router.query;
     const product = PRODUCTS[parseInt(id)];
-    const { cart, setCart } = useContext(CartContext);
+    const addToCart = useCartStore((state) => state.addToCart);
 
     const handleCart = (product) => {
-        if (cart.find((item) => item.id === product.id)) {
-            alert('이미 장바구니에 추가된 상품입니다.');
-            return;
-        }
-        setCart((prev) => [...prev, product]);
-        alert('장바구니에 추가되었습니다.');
+        addToCart(product);
     };
 
     return (
